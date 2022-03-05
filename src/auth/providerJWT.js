@@ -1,18 +1,25 @@
 import createHttpError from "http-errors";
 import generatorJWT from "../tools/generatorJWT.js";
-import userModel from "../schemas/user.js";
+import User from "../db/models/user.js";
 
 const providerJWT = async (req, res, next) => {
-  const _id = req.userID;
+  const id = req.userID;
+  console.log(id);
 
   try {
-    if (_id) {
-      const accessToken = await generatorJWT(_id, "15m");
-      const refreshToken = await generatorJWT(_id, "2w");
+    if (id) {
+      const accessToken = await generatorJWT(id, "15m");
+      const refreshToken = await generatorJWT(id, "2w");
 
       if (accessToken && refreshToken) {
-        const user = await userModel.findByIdAndUpdate(_id, { refreshToken });
-        if (user) {
+        const user = await User.update(
+          { refreshToken },
+          {
+            where: { id },
+            returning: true,
+          }
+        );
+        if (user[0] > 0 && user[1] && user[1][0]?.dataValues) {
           req.tokens = { accessToken, refreshToken };
           next();
         } else {

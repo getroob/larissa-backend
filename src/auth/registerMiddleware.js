@@ -1,15 +1,21 @@
 import createHttpError from "http-errors";
-import UserModel from "../schemas/user.js";
+import User from "../db/models/user.js";
+import encryptPassword from "../tools/encryptPassword.js";
 
 const registerMiddleware = async (req, res, next) => {
   try {
     const { firstName, lastName, email, password } = req.body;
-    const newUser = new UserModel({ firstName, lastName, email, password });
-    const createdUser = await newUser.save();
+    const encryptedPassword = await encryptPassword(password);
+    const createdUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: encryptedPassword,
+      refreshToken: null,
+    });
 
-    if (createdUser) {
-      const { _id } = createdUser.toJSON();
-      req.userID = _id;
+    if (createdUser?.dataValues) {
+      req.userID = createdUser.dataValues.id;
 
       next();
     } else {
