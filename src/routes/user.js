@@ -6,7 +6,7 @@ import registerMiddleware from "../auth/registerMiddleware.js";
 import sendCookies from "../auth/sendCookies.js";
 import authValidator from "../auth/authValidator.js";
 import createHttpError from "http-errors";
-import User from "../db/models/user.js";
+import { User } from "../db/models/index.js";
 
 const userRouter = Router();
 
@@ -28,11 +28,12 @@ userRouter.post("/logout", async (req, res, next) => {
 
 userRouter.get("/me", authValidator, async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.userID);
+    const user = await User.findByPk(req.userID, {
+      attributes: ["id", "firstName", "lastName", "email", "role"],
+    });
 
     if (user) {
-      const { id, firstName, lastName } = user;
-      res.send({ id, firstName, lastName });
+      res.send(user);
     } else {
       next(createHttpError(404, "User not found"));
     }

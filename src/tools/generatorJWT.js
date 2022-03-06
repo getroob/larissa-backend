@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const generatorJWT = (id, expiresIn) =>
+const generatorJWT = (data, expiresIn) =>
   new Promise((resolve, reject) =>
-    jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn }, (err, token) => {
+    jwt.sign(data, process.env.JWT_SECRET, { expiresIn }, (err, token) => {
       if (err) reject(err);
       else resolve(token);
     })

@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import User from "../db/models/user.js";
+import { User } from "../db/models/index.js";
 import encryptPassword from "../tools/encryptPassword.js";
 
 const registerMiddleware = async (req, res, next) => {
@@ -15,7 +15,8 @@ const registerMiddleware = async (req, res, next) => {
     });
 
     if (createdUser?.dataValues) {
-      req.userID = createdUser.dataValues.id;
+      req.userID = createdUser?.dataValues?.id;
+      req.userRole = createdUser?.dataValues?.role;
 
       next();
     } else {

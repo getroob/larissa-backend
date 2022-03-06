@@ -28,6 +28,11 @@ const User = sequelize.define("user", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  role: {
+    type: DataTypes.ENUM(["municipality", "refugee"]),
+    allowNull: false,
+    defaultValue: "refugee",
+  },
 });
 
 export default User;

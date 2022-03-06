@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import User from "../db/models/user.js";
+import { User } from "../db/models/index.js";
 
 const refreshMiddleware = async (req, res, next) => {
   const refreshToken = req.cookies.refreshToken;
@@ -11,6 +11,7 @@ const refreshMiddleware = async (req, res, next) => {
 
     if (user?.dataValues) {
       req.userID = user?.dataValues?.id;
+      req.userRole = user?.dataValues?.role;
       next();
     } else {
       next(createHttpError(401, "Credentials are not ok!"));

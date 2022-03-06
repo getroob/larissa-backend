@@ -7,6 +7,8 @@ import serverRouter from "./routes/server.js";
 import userRouter from "./routes/user.js";
 import errorHandler from "./errorHandler.js";
 import sequelize, { testDB } from "./db/index.js";
+import formRouter from "./routes/form.js";
+import appointmentRouter from "./routes/appointment.js";
 
 const server = express();
 server.use(
@@ -21,6 +23,8 @@ const port = process.env.PORT || 8080;
 
 server.use("/", serverRouter);
 server.use("/users", userRouter);
+server.use("/forms", formRouter);
+server.use("/appointments", appointmentRouter);
 server.use(errorHandler);
 
 server.listen(port, async () => {

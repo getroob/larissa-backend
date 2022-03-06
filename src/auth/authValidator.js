@@ -5,14 +5,15 @@ const authValidator = async (req, res, next) => {
   try {
     if (req.cookies.accessToken) {
       const payload = await validatorJWT(req.cookies.accessToken);
-      if (payload.id) {
+      if (payload?.id && payload?.role) {
         req.userID = payload.id;
+        req.userRole = payload.role;
         next();
       } else {
         next(createHttpError(401, "Token not valid"));
       }
     } else {
-      next(createHttpError(400, "No access token"));
+      next(createHttpError(401, "No access token"));
     }
   } catch (error) {
     next(error);
