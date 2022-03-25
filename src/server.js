@@ -9,6 +9,8 @@ import errorHandler from "./errorHandler.js";
 import sequelize, { testDB } from "./db/index.js";
 import formRouter from "./routes/form.js";
 import appointmentRouter from "./routes/appointment.js";
+import User from "./db/models/user.js";
+import encryptPassword from "./tools/encryptPassword.js";
 
 const server = express();
 server.use(
@@ -32,6 +34,14 @@ server.listen(port, async () => {
   await testDB();
   await sequelize.sync({ alert: true });
   console.table(listEndpoints(server));
+  // await User.create({
+  //   firstName: "Larissa",
+  //   lastName: "Municipality",
+  //   email: "larissa@larissa.gr",
+  //   password: await encryptPassword("Pasok123"),
+  //   refreshToken: null,
+  //   role: "municipality",
+  // });
 });
 
 server.on("error", (error) => console.log("❌ Server is not running ", error));

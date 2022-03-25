@@ -12,6 +12,10 @@ const Appointment = sequelize.define("appointment", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  kidFormId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
 export default Appointment;

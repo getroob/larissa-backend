@@ -26,6 +26,29 @@ userRouter.post("/logout", async (req, res, next) => {
   }
 });
 
+userRouter.get("/refugees", authValidator, async (req, res, next) => {
+  try {
+    if (req.userRole === "municipality") {
+      const user = await User.findAll({
+        where: {
+          role: "refugee",
+        },
+        attributes: ["id", "firstName", "lastName", "email"],
+      });
+
+      if (user) {
+        res.send(user);
+      } else {
+        next(createHttpError(404, "User not found"));
+      }
+    } else {
+      next(createHttpError(403, "You dont have access to this info"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 userRouter.get("/me", authValidator, async (req, res, next) => {
   try {
     const user = await User.findByPk(req.userID, {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import authValidator from "../auth/authValidator.js";
 import { Appointment } from "../db/models/index.js";
 import createHttpError from "http-errors";
+import { User } from "../db/models/index.js";
 
 const appointmentRouter = Router();
 
@@ -9,7 +10,9 @@ appointmentRouter.get("/", authValidator, async (req, res, next) => {
   try {
     let appointments;
     if (req.userRole === "municipality") {
-      appointments = await Appointment.findAll();
+      appointments = await Appointment.findAll({
+        include: [{ model: User, attributes: ["firstName", "lastName"] }],
+      });
     } else {
       appointments = await Appointment.findAll({
         where: { userId: req.userID },
@@ -33,6 +36,7 @@ appointmentRouter.post("/", authValidator, async (req, res, next) => {
       const newAppointment = await Appointment.create({
         datetime: req.body.datetime,
         userId: req.userID,
+        kidFormId: req.body.kidFormId,
       });
       if (newAppointment) {
         res.status(201).send(newAppointment);

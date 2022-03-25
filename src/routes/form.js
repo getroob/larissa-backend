@@ -8,8 +8,19 @@ const formRouter = Router();
 formRouter.get("/", authValidator, async (req, res, next) => {
   try {
     let forms;
+    const type = req.query.type;
     if (req.userRole === "refugee") {
-      forms = await Form.findAll({ where: { userId: req.userID } });
+      if (type === "preperation") {
+        forms = await Form.findAll({
+          where: { userId: req.userID, createdBy: "refugee" },
+        });
+      } else if (type === "validateForms") {
+        forms = await Form.findAll({
+          where: { userId: req.userID, createdBy: "municipality" },
+        });
+      } else {
+        forms = await Form.findAll({ where: { userId: req.userID } });
+      }
     } else {
       forms = await Form.findAll({ where: { createdBy: "municipality" } });
     }
@@ -20,7 +31,7 @@ formRouter.get("/", authValidator, async (req, res, next) => {
           createdBy: form.createdBy,
           child: {
             firstName: form.firstName,
-            lastname: form.lastname,
+            lastname: form.lastName,
             gender: form.gender,
             birthday: form.birthday,
             birthbuilding: form.birthBuilding,
@@ -125,7 +136,7 @@ formRouter.post("/", authValidator, async (req, res, next) => {
       userId: req.userRole === "municipality" ? req.body?.userId : req.userID,
       createdBy: req.userRole,
     });
-    //   console.log(newForm);
+
     if (newForm) {
       res.status(201).send(newForm);
     } else {
@@ -140,7 +151,10 @@ formRouter.get("/:id", authValidator, async (req, res, next) => {
   try {
     const form = await Form.findByPk(req.params.id);
     if (form) {
-      if (form.userId === req.userID) {
+      if (
+        form.userId === req.userID ||
+        (req.userRole === "municipality" && form.createdBy === "municipality")
+      ) {
         const reshapedForm = {
           id: form.id,
           createdBy: form.createdBy,
