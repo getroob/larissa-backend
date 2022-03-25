@@ -21,10 +21,7 @@ const Form = sequelize.define("form", {
   gender: {
     type: DataTypes.STRING,
   },
-  birthDate: {
-    type: DataTypes.STRING,
-  },
-  birthTime: {
+  birthday: {
     type: DataTypes.STRING,
   },
   birthBuilding: {
@@ -42,10 +39,7 @@ const Form = sequelize.define("form", {
   ssn: {
     type: DataTypes.STRING,
   },
-  responsibleFirstName: {
-    type: DataTypes.STRING,
-  },
-  responsibleLastName: {
+  responsibleFullName: {
     type: DataTypes.STRING,
   },
   responsibleResidency: {
@@ -54,10 +48,7 @@ const Form = sequelize.define("form", {
   responsibleCategory: {
     type: DataTypes.STRING,
   },
-  doctorFirstName: {
-    type: DataTypes.STRING,
-  },
-  doctorLastName: {
+  doctorFullName: {
     type: DataTypes.STRING,
   },
   doctorResidency: {

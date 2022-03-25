@@ -9,7 +9,6 @@ const loginMiddleware = async (req, res, next) => {
     const user = await User.findOne({ where: { email: identifier } });
 
     if (user?.dataValues) {
-      console.log(user.dataValues);
       const isValid = await authenticatePassword(
         password,
         user?.dataValues?.password

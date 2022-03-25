@@ -14,7 +14,63 @@ formRouter.get("/", authValidator, async (req, res, next) => {
       forms = await Form.findAll({ where: { createdBy: "municipality" } });
     }
     if (forms) {
-      res.send(forms);
+      const reshapedForms = forms.map((form) => {
+        return {
+          id: form.id,
+          createdBy: form.createdBy,
+          child: {
+            firstName: form.firstName,
+            lastname: form.lastname,
+            gender: form.gender,
+            birthday: form.birthday,
+            birthbuilding: form.birthBuilding,
+            birthtype: form.birthType,
+            ssn: form.ssn,
+            birthplace: form.birthPlace,
+            birthwitness: form.birthWitness,
+          },
+          responsible: {
+            fullname: form.responsibleFullName,
+            residency: form.responsibleResidency,
+            category: form.responsibleCategory,
+          },
+          doctor: {
+            fullname: form.doctorFullName,
+            residency: form.doctorResidency,
+            phone: form.doctorPhone,
+          },
+          father: {
+            lastName: form.fatherLastName,
+            firstName: form.fatherFirstName,
+            citizenship: form.fatherCitizenship,
+            residency: form.fatherResidency,
+            religion: form.fatherReligion,
+            faith: form.fatherFaith,
+            municipalityRegistered: form.fatherMunicipalityRegistered,
+            municipalityId: form.fatherMunicipalityId,
+            vat: form.fatherVat,
+            ssn: form.fatherSsn,
+            ssprovider: form.fatherSsProvider,
+          },
+          mother: {
+            lastName: form.motherLastName,
+            firstName: form.motherFirstName,
+            citizenship: form.motherCitizenship,
+            residency: form.motherResidency,
+            religion: form.motherReligion,
+            faith: form.motherFaith,
+            municipalityRegistered: form.motherMunicipalityRegistered,
+            municipalityId: form.motherMunicipalityId,
+            vat: form.motherVat,
+            ssn: form.motherSsn,
+            ssprovider: form.motherSsProvider,
+          },
+          createdAt: form.createdAt,
+          updatedAt: form.updatedAt,
+          userId: form.userId,
+        };
+      });
+      res.send(reshapedForms);
     } else {
       next(createHttpError(404, "No forms found"));
     }
@@ -25,10 +81,47 @@ formRouter.get("/", authValidator, async (req, res, next) => {
 
 formRouter.post("/", authValidator, async (req, res, next) => {
   try {
-    //   console.log(req.userID, req.userRole);
-    //   console.log(req.body);
+    const reshapedData = {
+      firstName: req.body.child?.firstName,
+      lastName: req.body.child?.lastName,
+      gender: req.body.child?.gender,
+      birthday: req.body.child?.birthday,
+      birthBuilding: req.body.child?.birthbuilding,
+      birthType: req.body.child?.birthtype,
+      birthPlace: req.body.child?.birthplace,
+      birthWitness: req.body.child?.birthwitness,
+      ssn: req.body.child?.ssn,
+      responsibleFullName: req.body.responsible?.fullname,
+      responsibleResidency: req.body.responsible?.residency,
+      responsibleCategory: req.body.responsible?.category,
+      doctorFullName: req.body.doctor?.fullname,
+      doctorResidency: req.body.doctor?.residency,
+      doctorPhone: req.body.doctor?.phone,
+      fatherFirstName: req.body.father?.firstName,
+      fatherLastName: req.body.father?.lastName,
+      fatherCitizenship: req.body.father?.citizenship,
+      fatherResidency: req.body.father?.residency,
+      fatherReligion: req.body.father?.religion,
+      fatherFaith: req.body.father?.faith,
+      fatherMunicipalityRegistered: req.body.father?.municipalityRegistered,
+      fatherMunicipalityId: req.body.father?.municipalityId,
+      fatherVat: req.body.father?.vat,
+      fatherSsn: req.body.father?.ssn,
+      fatherSsProvider: req.body.father?.ssprovider,
+      motherFirstName: req.body.mother?.firstName,
+      motherLastName: req.body.mother?.lastName,
+      motherCitizenship: req.body.mother?.citizenship,
+      motherResidency: req.body.mother?.residency,
+      motherReligion: req.body.mother?.religion,
+      motherFaith: req.body.mother?.faith,
+      motherMunicipalityRegistered: req.body.mother?.municipalityRegistered,
+      motherMunicipalityId: req.body.mother?.municipalityId,
+      motherVat: req.body.mother?.vat,
+      motherSsn: req.body.mother?.ssn,
+      motherSsProvider: req.body.mother?.ssprovider,
+    };
     const newForm = await Form.create({
-      ...req.body,
+      ...reshapedData,
       userId: req.userRole === "municipality" ? req.body?.userId : req.userID,
       createdBy: req.userRole,
     });
@@ -48,7 +141,61 @@ formRouter.get("/:id", authValidator, async (req, res, next) => {
     const form = await Form.findByPk(req.params.id);
     if (form) {
       if (form.userId === req.userID) {
-        res.send(form);
+        const reshapedForm = {
+          id: form.id,
+          createdBy: form.createdBy,
+          child: {
+            firstName: form.firstName,
+            lastname: form.lastName,
+            gender: form.gender,
+            birthday: form.birthday,
+            birthbuilding: form.birthBuilding,
+            birthtype: form.birthType,
+            ssn: form.ssn,
+            birthplace: form.birthPlace,
+            birthwitness: form.birthWitness,
+          },
+          responsible: {
+            fullname: form.responsibleFullName,
+            residency: form.responsibleResidency,
+            category: form.responsibleCategory,
+          },
+          doctor: {
+            fullname: form.doctorFullName,
+            residency: form.doctorResidency,
+            phone: form.doctorPhone,
+          },
+          father: {
+            lastName: form.fatherLastName,
+            firstName: form.fatherFirstName,
+            citizenship: form.fatherCitizenship,
+            residency: form.fatherResidency,
+            religion: form.fatherReligion,
+            faith: form.fatherFaith,
+            municipalityRegistered: form.fatherMunicipalityRegistered,
+            municipalityId: form.fatherMunicipalityId,
+            vat: form.fatherVat,
+            ssn: form.fatherSsn,
+            ssprovider: form.fatherSsProvider,
+          },
+          mother: {
+            lastName: form.motherLastName,
+            firstName: form.motherFirstName,
+            citizenship: form.motherCitizenship,
+            residency: form.motherResidency,
+            religion: form.motherReligion,
+            faith: form.motherFaith,
+            municipalityRegistered: form.motherMunicipalityRegistered,
+            municipalityId: form.motherMunicipalityId,
+            vat: form.motherVat,
+            ssn: form.motherSsn,
+            ssprovider: form.motherSsProvider,
+          },
+          createdAt: form.createdAt,
+          updatedAt: form.updatedAt,
+          userId: form.userId,
+        };
+        res.send(reshapedForm);
       } else {
         next(403, "You dont have access to this form");
       }
@@ -68,12 +215,107 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
         form.userId === req.userID ||
         (req.userRole === "municipality" && form.createdBy === "municipality")
       ) {
-        const updatedForm = await Form.update(req.body, {
+        const reshapedForm = {
+          firstName: req.body.child?.firstName,
+          lastName: req.body.child?.lastname,
+          gender: req.body.child?.gender,
+          birthday: req.body.child?.birthday,
+          birthBuilding: req.body.child?.birthbuilding,
+          birthType: req.body.child?.birthtype,
+          birthPlace: req.body.child?.birthplace,
+          birthWitness: req.body.child?.birthwitness,
+          ssn: req.body.child?.ssn,
+          responsibleFullName: req.body.responsible?.fullname,
+          responsibleResidency: req.body.responsible?.residency,
+          responsibleCategory: req.body.responsible?.category,
+          doctorFullName: req.body.doctor?.fullname,
+          doctorResidency: req.body.doctor?.residency,
+          doctorPhone: req.body.doctor?.phone,
+          fatherFirstName: req.body.father?.firstName,
+          fatherLastName: req.body.father?.lastName,
+          fatherCitizenship: req.body.father?.citizenship,
+          fatherResidency: req.body.father?.residency,
+          fatherReligion: req.body.father?.religion,
+          fatherFaith: req.body.father?.faith,
+          fatherMunicipalityRegistered: req.body.father?.municipalityRegistered,
+          fatherMunicipalityId: req.body.father?.municipalityId,
+          fatherVat: req.body.father?.vat,
+          fatherSsn: req.body.father?.ssn,
+          fatherSsProvider: req.body.father?.ssprovider,
+          motherFirstName: req.body.mother?.firstName,
+          motherLastName: req.body.mother?.lastName,
+          motherCitizenship: req.body.mother?.citizenship,
+          motherResidency: req.body.mother?.residency,
+          motherReligion: req.body.mother?.religion,
+          motherFaith: req.body.mother?.faith,
+          motherMunicipalityRegistered: req.body.mother?.municipalityRegistered,
+          motherMunicipalityId: req.body.mother?.municipalityId,
+          motherVat: req.body.mother?.vat,
+          motherSsn: req.body.mother?.ssn,
+          motherSsProvider: req.body.mother?.ssprovider,
+        };
+        const updatedForm = await Form.update(reshapedForm, {
           where: { id: req.params.id },
           returning: true,
         });
         if (updatedForm[0] === 1) {
-          res.send(updatedForm[1][0]);
+          const reshapedForm = {
+            id: updatedForm[1][0]?.id,
+            createdBy: updatedForm[1][0]?.createdBy,
+            child: {
+              firstName: updatedForm[1][0]?.firstName,
+              lastname: updatedForm[1][0]?.lastName,
+              gender: updatedForm[1][0]?.gender,
+              birthday: updatedForm[1][0]?.birthday,
+              birthbuilding: updatedForm[1][0]?.birthBuilding,
+              birthtype: updatedForm[1][0]?.birthType,
+              ssn: updatedForm[1][0]?.ssn,
+              birthplace: updatedForm[1][0]?.birthPlace,
+              birthwitness: updatedForm[1][0]?.birthWitness,
+            },
+            responsible: {
+              fullname: updatedForm[1][0]?.responsibleFullName,
+              residency: updatedForm[1][0]?.responsibleFResidency,
+              category: updatedForm[1][0]?.responsibleFirstName,
+            },
+            doctor: {
+              fullname: updatedForm[1][0]?.doctorFullName,
+              residency: updatedForm[1][0]?.doctorResidency,
+              phone: updatedForm[1][0]?.doctorPhone,
+            },
+            father: {
+              lastName: updatedForm[1][0]?.fatherLastName,
+              firstName: updatedForm[1][0]?.fatherFirstName,
+              citizenship: updatedForm[1][0]?.fatherCitizenship,
+              residency: updatedForm[1][0]?.fatherResidency,
+              religion: updatedForm[1][0]?.fatherReligion,
+              faith: updatedForm[1][0]?.fatherFaith,
+              municipalityRegistered:
+                updatedForm[1][0]?.fatherMunicipalityRegistered,
+              municipalityId: updatedForm[1][0]?.fatherMunicipalityId,
+              vat: updatedForm[1][0]?.fatherVat,
+              ssn: updatedForm[1][0]?.fatherSsn,
+              ssprovider: updatedForm[1][0]?.fatherSsProvider,
+            },
+            mother: {
+              lastName: updatedForm[1][0]?.motherLastName,
+              firstName: updatedForm[1][0]?.motherFirstName,
+              citizenship: updatedForm[1][0]?.motherCitizenship,
+              residency: updatedForm[1][0]?.motherResidency,
+              religion: updatedForm[1][0]?.motherReligion,
+              faith: updatedForm[1][0]?.motherFaith,
+              municipalityRegistered:
+                updatedForm[1][0]?.motherMunicipalityRegistered,
+              municipalityId: updatedForm[1][0]?.motherMunicipalityId,
+              vat: updatedForm[1][0]?.motherVat,
+              ssn: updatedForm[1][0]?.motherSsn,
+              ssprovider: updatedForm[1][0]?.motherSsProvider,
+            },
+            createdAt: updatedForm[1][0]?.createdAt,
+            updatedAt: updatedForm[1][0]?.updatedAt,
+            userId: updatedForm[1][0]?.userId,
+          };
+          res.send(reshapedForm);
         } else {
           next(createHttpError(400, "Failed to update form"));
         }
