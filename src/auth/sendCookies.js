@@ -1,5 +1,6 @@
 const sendCookies = async (req, res, next) => {
   try {
+    console.log(process.env.ENV, process.env.ENV === "production");
     res
       .cookie("accessToken", req.tokens?.accessToken, {
         // domain: process.env.FE_URL,
