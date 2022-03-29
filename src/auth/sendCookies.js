@@ -1,12 +1,13 @@
 const sendCookies = async (req, res, next) => {
+  console.log(process.env.ENV, process.env.ENV === "production");
   try {
-    console.log(process.env.ENV, process.env.ENV === "production");
     res
       .cookie("accessToken", req.tokens?.accessToken, {
         // domain: process.env.FE_URL,
         httpOnly: true,
         secure: process.env.ENV === "production", // only https requests
         maxAge: 15 * 60 * 1000,
+        sameSite: "None",
       })
       .cookie("refreshToken", req.tokens?.refreshToken, {
         // domain: process.env.FE_URL,
@@ -14,6 +15,7 @@ const sendCookies = async (req, res, next) => {
         httpOnly: true,
         secure: process.env.ENV === "production", // only https requests
         maxAge: 14 * 24 * 60 * 60 * 1000,
+        sameSite: "None",
       })
       .send({ login: true, userID: req.userID });
   } catch (error) {

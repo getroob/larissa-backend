@@ -16,9 +16,16 @@ userRouter.post("/refresh", refreshMiddleware, providerJWT, sendCookies);
 userRouter.post("/logout", async (req, res, next) => {
   try {
     res
-      .clearCookie("accessToken")
+      .clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.ENV === "production", // only https requests
+        sameSite: "None",
+      })
       .clearCookie("refreshToken", {
         path: "/users/refresh",
+        httpOnly: true,
+        secure: process.env.ENV === "production", // only https requests
+        sameSite: "None",
       })
       .send({ logout: true });
   } catch (error) {
