@@ -37,24 +37,11 @@ server.listen(port, async () => {
   // await User.create({
   //   firstName: "Larissa",
   //   lastName: "Municipality",
-  //   email: "larissa@larissa.gr",
-  //   password: await encryptPassword("Pasok123"),
+  //   email: "municipality@larissa.gr",
+  //   password: await encryptPassword("Larissa1"),
   //   refreshToken: null,
   //   role: "municipality",
   // });
 });
 
 server.on("error", (error) => console.log("❌ Server is not running ", error));
-
-// mongoose.connect(process.env.DB_URL);
-
-// mongoose.connection.on("connected", () => {
-//   console.log("Connected to DB!");
-
-//   server.listen(port, () => {
-//     console.table(listEndpoints(server));
-//     console.log(`Server is listening at port ${port}`);
-//   });
-// });
-
-// mongoose.connection.on("error", (error) => console.log(error));
