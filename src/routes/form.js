@@ -2,6 +2,7 @@ import { Router } from "express";
 import authValidator from "../auth/authValidator.js";
 import { Form } from "../db/models/index.js";
 import createHttpError from "http-errors";
+import sendEmail from "../tools/sendEmail.js";
 
 const formRouter = Router();
 
@@ -22,7 +23,11 @@ formRouter.get("/", authValidator, async (req, res, next) => {
         forms = await Form.findAll({ where: { userId: req.userID } });
       }
     } else {
-      forms = await Form.findAll({ where: { createdBy: "municipality" } });
+      if (type === "preparedForms") {
+        forms = await Form.findAll({ where: { createdBy: "refugee" } });
+      } else {
+        forms = await Form.findAll({ where: { createdBy: "municipality" } });
+      }
     }
     if (forms) {
       const reshapedForms = forms.map((form) => {
@@ -76,6 +81,11 @@ formRouter.get("/", authValidator, async (req, res, next) => {
             ssn: form.motherSsn,
             ssprovider: form.motherSsProvider,
           },
+          residency: {
+            city: form.residencyCity,
+            address: form.residencyAddress,
+            phone: form.phone,
+          },
           createdAt: form.createdAt,
           updatedAt: form.updatedAt,
           userId: form.userId,
@@ -92,55 +102,75 @@ formRouter.get("/", authValidator, async (req, res, next) => {
 
 formRouter.post("/", authValidator, async (req, res, next) => {
   try {
-    const reshapedData = {
-      firstName: req.body.child?.firstName,
-      lastName: req.body.child?.lastName,
-      gender: req.body.child?.gender,
-      birthday: req.body.child?.birthday,
-      birthBuilding: req.body.child?.birthbuilding,
-      birthType: req.body.child?.birthtype,
-      birthPlace: req.body.child?.birthplace,
-      birthWitness: req.body.child?.birthwitness,
-      ssn: req.body.child?.ssn,
-      responsibleFullName: req.body.responsible?.fullname,
-      responsibleResidency: req.body.responsible?.residency,
-      responsibleCategory: req.body.responsible?.category,
-      doctorFullName: req.body.doctor?.fullname,
-      doctorResidency: req.body.doctor?.residency,
-      doctorPhone: req.body.doctor?.phone,
-      fatherFirstName: req.body.father?.firstName,
-      fatherLastName: req.body.father?.lastName,
-      fatherCitizenship: req.body.father?.citizenship,
-      fatherResidency: req.body.father?.residency,
-      fatherReligion: req.body.father?.religion,
-      fatherFaith: req.body.father?.faith,
-      fatherMunicipalityRegistered: req.body.father?.municipalityRegistered,
-      fatherMunicipalityId: req.body.father?.municipalityId,
-      fatherVat: req.body.father?.vat,
-      fatherSsn: req.body.father?.ssn,
-      fatherSsProvider: req.body.father?.ssprovider,
-      motherFirstName: req.body.mother?.firstName,
-      motherLastName: req.body.mother?.lastName,
-      motherCitizenship: req.body.mother?.citizenship,
-      motherResidency: req.body.mother?.residency,
-      motherReligion: req.body.mother?.religion,
-      motherFaith: req.body.mother?.faith,
-      motherMunicipalityRegistered: req.body.mother?.municipalityRegistered,
-      motherMunicipalityId: req.body.mother?.municipalityId,
-      motherVat: req.body.mother?.vat,
-      motherSsn: req.body.mother?.ssn,
-      motherSsProvider: req.body.mother?.ssprovider,
-    };
-    const newForm = await Form.create({
-      ...reshapedData,
-      userId: req.userRole === "municipality" ? req.body?.userId : req.userID,
-      createdBy: req.userRole,
+    const numOfForms = await Form.count({
+      where: { userId: req.userID, createdBy: "refugee" },
     });
 
-    if (newForm) {
-      res.status(201).send(newForm);
+    if (numOfForms >= 2) {
+      next(createHttpError(400, "You cant create more than 2 forms"));
     } else {
-      next(createHttpError(400, "Failed to create form"));
+      const reshapedData = {
+        firstName: req.body.child?.firstName,
+        lastName: req.body.child?.lastName,
+        gender: req.body.child?.gender,
+        birthday: req.body.child?.birthday,
+        birthBuilding: req.body.child?.birthbuilding,
+        birthType: req.body.child?.birthtype,
+        birthPlace: req.body.child?.birthplace,
+        birthWitness: req.body.child?.birthwitness,
+        ssn: req.body.child?.ssn,
+        responsibleFullName: req.body.responsible?.fullname,
+        responsibleResidency: req.body.responsible?.residency,
+        responsibleCategory: req.body.responsible?.category,
+        doctorFullName: req.body.doctor?.fullname,
+        doctorResidency: req.body.doctor?.residency,
+        doctorPhone: req.body.doctor?.phone,
+        fatherFirstName: req.body.father?.firstName,
+        fatherLastName: req.body.father?.lastName,
+        fatherCitizenship: req.body.father?.citizenship,
+        fatherResidency: req.body.father?.residency,
+        fatherReligion: req.body.father?.religion,
+        fatherFaith: req.body.father?.faith,
+        fatherMunicipalityRegistered: req.body.father?.municipalityRegistered,
+        fatherMunicipalityId: req.body.father?.municipalityId,
+        fatherVat: req.body.father?.vat,
+        fatherSsn: req.body.father?.ssn,
+        fatherSsProvider: req.body.father?.ssprovider,
+        motherFirstName: req.body.mother?.firstName,
+        motherLastName: req.body.mother?.lastName,
+        motherCitizenship: req.body.mother?.citizenship,
+        motherResidency: req.body.mother?.residency,
+        motherReligion: req.body.mother?.religion,
+        motherFaith: req.body.mother?.faith,
+        motherMunicipalityRegistered: req.body.mother?.municipalityRegistered,
+        motherMunicipalityId: req.body.mother?.municipalityId,
+        motherVat: req.body.mother?.vat,
+        motherSsn: req.body.mother?.ssn,
+        motherSsProvider: req.body.mother?.ssprovider,
+        residencyCity: req.body.residency?.city,
+        residencyAddress: req.body.residency?.address,
+        phone: req.body.residency?.phone,
+      };
+
+      const newForm = await Form.create({
+        ...reshapedData,
+        userId: req.userRole === "municipality" ? req.body?.userId : req.userID,
+        createdBy: req.userRole,
+      });
+
+      if (newForm) {
+        try {
+          await sendEmail(
+            "Μια νεα φορμα δημιουργήθηκε",
+            `Μπορειτε να δειτε την νεα φορμα εδω: ${process.env.FE_URL}/forms/${newForm?.dataValues?.id}`
+          );
+        } catch (error) {
+          console.log(error);
+        }
+        res.status(201).send(newForm);
+      } else {
+        next(createHttpError(400, "Failed to create form"));
+      }
     }
   } catch (error) {
     next(error);
@@ -151,10 +181,7 @@ formRouter.get("/:id", authValidator, async (req, res, next) => {
   try {
     const form = await Form.findByPk(req.params.id);
     if (form) {
-      if (
-        form.userId === req.userID ||
-        (req.userRole === "municipality" && form.createdBy === "municipality")
-      ) {
+      if (form.userId === req.userID || req.userRole === "municipality") {
         const reshapedForm = {
           id: form.id,
           createdBy: form.createdBy,
@@ -205,6 +232,11 @@ formRouter.get("/:id", authValidator, async (req, res, next) => {
             ssn: form.motherSsn,
             ssprovider: form.motherSsProvider,
           },
+          residency: {
+            city: form.residencyCity,
+            address: form.residencyAddress,
+            phone: form.phone,
+          },
           createdAt: form.createdAt,
           updatedAt: form.updatedAt,
           userId: form.userId,
@@ -225,10 +257,7 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
   try {
     const form = await Form.findByPk(req.params.id);
     if (form) {
-      if (
-        form.userId === req.userID ||
-        (req.userRole === "municipality" && form.createdBy === "municipality")
-      ) {
+      if (form.userId === req.userID || req.userRole === "municipality") {
         const reshapedForm = {
           firstName: req.body.child?.firstName,
           lastName: req.body.child?.lastname,
@@ -267,6 +296,9 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
           motherVat: req.body.mother?.vat,
           motherSsn: req.body.mother?.ssn,
           motherSsProvider: req.body.mother?.ssprovider,
+          residencyCity: req.body.residency?.city,
+          residencyAddress: req.body.residency?.address,
+          phone: req.body.residency?.phone,
         };
         const updatedForm = await Form.update(reshapedForm, {
           where: { id: req.params.id },
@@ -325,10 +357,25 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
               ssn: updatedForm[1][0]?.motherSsn,
               ssprovider: updatedForm[1][0]?.motherSsProvider,
             },
+            residency: {
+              city: updatedForm[1][0]?.residencyCity,
+              address: updatedForm[1][0]?.residencyAddress,
+              phone: updatedForm[1][0]?.phone,
+            },
             createdAt: updatedForm[1][0]?.createdAt,
             updatedAt: updatedForm[1][0]?.updatedAt,
             userId: updatedForm[1][0]?.userId,
           };
+
+          try {
+            await sendEmail(
+              "Μια φορμα αλλαξε",
+              `Μπορειτε να δειτε την φορμα εδω: ${process.env.FE_URL}/forms/${updatedForm[1][0]?.id}`
+            );
+          } catch (error) {
+            console.log(error);
+          }
+
           res.send(reshapedForm);
         } else {
           next(createHttpError(400, "Failed to update form"));
@@ -348,10 +395,7 @@ formRouter.delete("/:id", authValidator, async (req, res, next) => {
   try {
     const form = await Form.findByPk(req.params.id);
     if (form) {
-      if (
-        form.userId === req.userID ||
-        (req.userRole === "municipality" && form.createdBy === "municipality")
-      ) {
+      if (form.userId === req.userID || req.userRole === "municipality") {
         const deletedForm = await Form.destroy({
           where: {
             id: req.params.id,

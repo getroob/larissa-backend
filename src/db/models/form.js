@@ -123,6 +123,15 @@ const Form = sequelize.define("form", {
   motherSsProvider: {
     type: DataTypes.STRING,
   },
+  residencyCity: {
+    type: DataTypes.STRING,
+  },
+  residencyAddress: {
+    type: DataTypes.STRING,
+  },
+  phone: {
+    type: DataTypes.STRING,
+  },
 });
 
 export default Form;
