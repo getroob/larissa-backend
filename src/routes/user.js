@@ -7,6 +7,7 @@ import sendCookies from "../auth/sendCookies.js";
 import authValidator from "../auth/authValidator.js";
 import createHttpError from "http-errors";
 import { User } from "../db/models/index.js";
+import validatorJWT from "../tools/validatorJWT.js";
 
 const userRouter = Router();
 
@@ -29,6 +30,28 @@ userRouter.post("/logout", async (req, res, next) => {
       })
       .send({ logout: true });
   } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.post("/verifyEmail/:token", async (req, res, next) => {
+  try {
+    const payload = await validatorJWT(req.params.token);
+    if (!payload?.email) {
+      return next(createHttpError(400, 'token not valid'))
+    }
+
+    await User.update({verified: true}, {
+      where: { email: req.params.payload?.email },
+      returning: true,
+    });
+
+    res.send('email verified')
+
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError') {
+      return next(createHttpError(400, 'token not valid'))
+    }
     next(error);
   }
 });

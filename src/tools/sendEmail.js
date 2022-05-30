@@ -2,29 +2,29 @@ import nodemailer from "nodemailer";
 
 const { user, pass } = process.env;
 const transporter = nodemailer.createTransport({
-  host: "imap.gmail.com",
-  port: 993,
+  // host: "imap.gmail.com",
+  // port: 993,
+  // secure: true,
+  // auth: {
+  //   user,
+  //   pass,
+  // },
+  host: "mail.auth.gr",
+  port: 587,
   secure: true,
   auth: {
-    user,
-    pass,
+    user: "user",
+    pass: "pass",
   },
-  // host: "mail.auth.gr",
-  // port: 587,
-  // secure: false,
-  // auth: {
-  //   user: "email",
-  //   pass: "password",
-  // },
-  // tls: {
-  //   ciphers: "SSLv3",
-  // },
+  tls: {
+    ciphers: "SSLv3",
+  },
 });
 
-const sendEmail = async (subject, text) => {
+const sendEmail = async (subject, text, to) => {
   const info = await transporter.sendMail({
     from: `"Larissa Roob" <${user}>`,
-    to: user,
+    to: to || user,
     // from: `"Larissa Roob" <email>`,
     // to: "email",
     subject,
