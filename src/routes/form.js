@@ -34,6 +34,7 @@ formRouter.get("/", authValidator, async (req, res, next) => {
         return {
           id: form.id,
           createdBy: form.createdBy,
+          stage: form.stage,
           child: {
             firstName: form.firstName,
             lastname: form.lastName,
@@ -185,6 +186,7 @@ formRouter.get("/:id", authValidator, async (req, res, next) => {
         const reshapedForm = {
           id: form.id,
           createdBy: form.createdBy,
+          stage: form.stage,
           child: {
             firstName: form.firstName,
             lastname: form.lastName,
@@ -299,6 +301,7 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
           residencyCity: req.body.residency?.city,
           residencyAddress: req.body.residency?.address,
           phone: req.body.residency?.phone,
+          stage: req.body.stage,
         };
         const updatedForm = await Form.update(reshapedForm, {
           where: { id: req.params.id },
@@ -308,6 +311,7 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
           const reshapedForm = {
             id: updatedForm[1][0]?.id,
             createdBy: updatedForm[1][0]?.createdBy,
+            stage: updatedForm[1][0]?.stage,
             child: {
               firstName: updatedForm[1][0]?.firstName,
               lastname: updatedForm[1][0]?.lastName,
