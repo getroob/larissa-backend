@@ -12,6 +12,11 @@ const Form = sequelize.define("form", {
     type: DataTypes.ENUM(["municipality", "refugee"]),
     allowNull: false,
   },
+  stage: {
+    type: DataTypes.ENUM(["edit", "done", "deleted"]),
+    allowNull: false,
+    defaultValue: "edit",
+  },
   firstName: {
     type: DataTypes.STRING,
   },
