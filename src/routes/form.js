@@ -29,7 +29,6 @@ formRouter.get("/", authValidator, async (req, res, next) => {
         forms = await Form.findAll({ where: { createdBy: "municipality" } });
       }
     }
-    console.log(forms.stage, forms)
     if (forms) {
       const reshapedForms = forms.map((form) => {
         return {
@@ -105,7 +104,7 @@ formRouter.get("/", authValidator, async (req, res, next) => {
 formRouter.post("/", authValidator, async (req, res, next) => {
   try {
     const numOfForms = await Form.count({
-      where: { userId: req.userID, createdBy: "refugee" },
+      where: { userId: req.userID, createdBy: "refugee", stage: ['edit', 'done'] },
     });
 
     if (numOfForms >= 2) {
