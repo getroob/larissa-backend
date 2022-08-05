@@ -29,7 +29,7 @@ formRouter.get("/", authValidator, async (req, res, next) => {
         forms = await Form.findAll({ where: { createdBy: "municipality" } });
       }
     }
-    console.log(form.stage, form)
+    console.log(forms.stage, forms)
     if (forms) {
       const reshapedForms = forms.map((form) => {
         return {
