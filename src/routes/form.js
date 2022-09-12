@@ -383,6 +383,7 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
             await Form.create({
             ...reshapedForm,
             userId: req.userID,
+            stage: 'edit',
             createdBy: 'municipality',
           });
           }
