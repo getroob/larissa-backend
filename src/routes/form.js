@@ -308,7 +308,7 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
           returning: true,
         });
         if (updatedForm[0] === 1) {
-          const reshapedForm = {
+          const reshapedFormToSend = {
             id: updatedForm[1][0]?.id,
             createdBy: updatedForm[1][0]?.createdBy,
             stage: updatedForm[1][0]?.stage,
@@ -379,8 +379,15 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
           } catch (error) {
             console.log(error);
           }
+          if (req.body.stage === 'done' && req.userRole !== "municipality") {
+            await Form.create({
+            ...reshapedForm,
+            userId: req.userID,
+            createdBy: 'municipality',
+          });
+          }
 
-          res.send(reshapedForm);
+          res.send(reshapedFormToSend);
         } else {
           next(createHttpError(400, "Failed to update form"));
         }
