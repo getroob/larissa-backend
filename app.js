@@ -36,22 +36,22 @@ server.listen(port, async () => {
   await testDB();
   await sequelize.sync({ alert: true });
   console.table(listEndpoints(server));
-  await User.create({
-    firstName: "Larissa",
-    lastName: "Municipality",
-    email: "municipality@larissa.gr",
-    password: await encryptPassword("Larissa1"),
-    refreshToken: null,
-    role: "municipality",
-  });
-  await User.create({
-    firstName: "Refugee",
-    lastName: "Municipality",
-    email: "refugee@larissa.gr",
-    password: await encryptPassword("Larissa1"),
-    refreshToken: null,
-    role: "refugee",
-  });
+  // await User.create({
+  //   firstName: "Larissa",
+  //   lastName: "Municipality",
+  //   email: "municipality@larissa.gr",
+  //   password: await encryptPassword("Larissa1"),
+  //   refreshToken: null,
+  //   role: "municipality",
+  // });
+  // await User.create({
+  //   firstName: "Refugee",
+  //   lastName: "Municipality",
+  //   email: "refugee@larissa.gr",
+  //   password: await encryptPassword("Larissa1"),
+  //   refreshToken: null,
+  //   role: "refugee",
+  // });
 });
 
 server.on("error", (error) => console.log("❌ Server is not running ", error));
