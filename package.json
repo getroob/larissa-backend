@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon -r dotenv/config src/server.js",
-    "start": "node src/server.js"
+    "start": "pm2 start src/server.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -21,6 +21,7 @@
     "nodemailer": "^6.7.3",
     "nodemon": "^2.0.15",
     "pg": "^8.7.3",
+    "pm2": "^5.2.0",
     "sequelize": "^6.17.0"
   }
 }
