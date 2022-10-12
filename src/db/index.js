@@ -4,7 +4,7 @@ const { PGHOST, PGUSER, PGDATABASE, PGPASSWORD } = process.env;
 
 const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
   host: PGHOST,
-  dialect: "postgres",
+  dialect: "mysql",
   dialectOptions: {
     ssl: {
       require: true,

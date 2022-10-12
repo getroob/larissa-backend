@@ -2,6 +2,8 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import listEndpoints from "express-list-endpoints";
+import * as dotenv from 'dotenv'
+dotenv.config() 
 
 import serverRouter from "./src/routes/server.js";
 import userRouter from "./src/routes/user.js";
