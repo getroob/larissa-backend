@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import * as dotenv from 'dotenv'
+dotenv.config() 
 
 const generatorJWT = (data, expiresIn) =>
   new Promise((resolve, reject) =>

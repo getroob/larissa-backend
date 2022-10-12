@@ -3,6 +3,8 @@ import { User } from "../db/models/index.js";
 import encryptPassword from "../tools/encryptPassword.js";
 import generatorJWT from "../tools/generatorJWT.js";
 import sendEmail from "../tools/sendEmail.js";
+import * as dotenv from 'dotenv'
+dotenv.config() 
 
 const registerMiddleware = async (req, res, next) => {
   try {

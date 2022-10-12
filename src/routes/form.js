@@ -3,6 +3,8 @@ import authValidator from "../auth/authValidator.js";
 import { Form } from "../db/models/index.js";
 import createHttpError from "http-errors";
 import sendEmail from "../tools/sendEmail.js";
+import * as dotenv from 'dotenv'
+dotenv.config() 
 
 const formRouter = Router();
 

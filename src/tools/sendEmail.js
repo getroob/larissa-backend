@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import * as dotenv from 'dotenv'
+dotenv.config() 
 
 const { user, pass } = process.env;
 const transporter = nodemailer.createTransport({

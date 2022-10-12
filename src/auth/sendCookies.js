@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv'
+dotenv.config() 
+
 const sendCookies = async (req, res, next) => {
   console.log(process.env.ENV, process.env.ENV === "production");
   try {

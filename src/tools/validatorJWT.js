@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import * as dotenv from 'dotenv'
+dotenv.config() 
 
 const validatorJWT = (token) =>
   new Promise((resolve, reject) =>

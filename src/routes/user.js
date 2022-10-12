@@ -8,6 +8,8 @@ import authValidator from "../auth/authValidator.js";
 import createHttpError from "http-errors";
 import { User } from "../db/models/index.js";
 import validatorJWT from "../tools/validatorJWT.js";
+import * as dotenv from 'dotenv'
+dotenv.config() 
 
 const userRouter = Router();
 
