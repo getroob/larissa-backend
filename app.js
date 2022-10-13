@@ -33,10 +33,10 @@ server.use(cookieParser());
 server.use(express.json());
 const port = process.env.PORT || 8080;
 
-server.use("/status", serverRouter);
-server.use("/users", userRouter);
-server.use("/forms", formRouter);
-server.use("/appointments", appointmentRouter);
+server.use("/api/status", serverRouter);
+server.use("/api/users", userRouter);
+server.use("/api/forms", formRouter);
+server.use("/api/appointments", appointmentRouter);
 server.use(errorHandler);
 
 // All other GET requests not handled before will return our React app
