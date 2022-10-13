@@ -8,7 +8,7 @@ const providerJWT = async (req, res, next) => {
 
   try {
     if (id) {
-      const accessToken = await generatorJWT({ id, role }, "15m");
+      const accessToken = await generatorJWT({ id, role }, "2w");
       const refreshToken = await generatorJWT({ id, role }, "2w");
 
       if (accessToken && refreshToken) {

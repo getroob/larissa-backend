@@ -309,91 +309,87 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
           where: { id: req.params.id },
           returning: true,
         });
-        if (updatedForm[0] === 1) {
-          const reshapedFormToSend = {
-            id: updatedForm[1][0]?.id,
-            createdBy: updatedForm[1][0]?.createdBy,
-            stage: updatedForm[1][0]?.stage,
-            child: {
-              firstName: updatedForm[1][0]?.firstName,
-              lastname: updatedForm[1][0]?.lastName,
-              gender: updatedForm[1][0]?.gender,
-              birthday: updatedForm[1][0]?.birthday,
-              birthbuilding: updatedForm[1][0]?.birthBuilding,
-              birthtype: updatedForm[1][0]?.birthType,
-              ssn: updatedForm[1][0]?.ssn,
-              birthplace: updatedForm[1][0]?.birthPlace,
-              birthwitness: updatedForm[1][0]?.birthWitness,
-            },
-            responsible: {
-              fullname: updatedForm[1][0]?.responsibleFullName,
-              residency: updatedForm[1][0]?.responsibleFResidency,
-              category: updatedForm[1][0]?.responsibleFirstName,
-            },
-            doctor: {
-              fullname: updatedForm[1][0]?.doctorFullName,
-              residency: updatedForm[1][0]?.doctorResidency,
-              phone: updatedForm[1][0]?.doctorPhone,
-            },
-            father: {
-              lastName: updatedForm[1][0]?.fatherLastName,
-              firstName: updatedForm[1][0]?.fatherFirstName,
-              citizenship: updatedForm[1][0]?.fatherCitizenship,
-              residency: updatedForm[1][0]?.fatherResidency,
-              religion: updatedForm[1][0]?.fatherReligion,
-              faith: updatedForm[1][0]?.fatherFaith,
-              municipalityRegistered:
-                updatedForm[1][0]?.fatherMunicipalityRegistered,
-              municipalityId: updatedForm[1][0]?.fatherMunicipalityId,
-              vat: updatedForm[1][0]?.fatherVat,
-              ssn: updatedForm[1][0]?.fatherSsn,
-              ssprovider: updatedForm[1][0]?.fatherSsProvider,
-            },
-            mother: {
-              lastName: updatedForm[1][0]?.motherLastName,
-              firstName: updatedForm[1][0]?.motherFirstName,
-              citizenship: updatedForm[1][0]?.motherCitizenship,
-              residency: updatedForm[1][0]?.motherResidency,
-              religion: updatedForm[1][0]?.motherReligion,
-              faith: updatedForm[1][0]?.motherFaith,
-              municipalityRegistered:
-                updatedForm[1][0]?.motherMunicipalityRegistered,
-              municipalityId: updatedForm[1][0]?.motherMunicipalityId,
-              vat: updatedForm[1][0]?.motherVat,
-              ssn: updatedForm[1][0]?.motherSsn,
-              ssprovider: updatedForm[1][0]?.motherSsProvider,
-            },
-            residency: {
-              city: updatedForm[1][0]?.residencyCity,
-              address: updatedForm[1][0]?.residencyAddress,
-              phone: updatedForm[1][0]?.phone,
-            },
-            createdAt: updatedForm[1][0]?.createdAt,
-            updatedAt: updatedForm[1][0]?.updatedAt,
-            userId: updatedForm[1][0]?.userId,
-          };
+        const reshapedFormToSend = {
+          id: updatedForm[1][0]?.id,
+          createdBy: updatedForm[1][0]?.createdBy,
+          stage: updatedForm[1][0]?.stage,
+          child: {
+            firstName: updatedForm[1][0]?.firstName,
+            lastname: updatedForm[1][0]?.lastName,
+            gender: updatedForm[1][0]?.gender,
+            birthday: updatedForm[1][0]?.birthday,
+            birthbuilding: updatedForm[1][0]?.birthBuilding,
+            birthtype: updatedForm[1][0]?.birthType,
+            ssn: updatedForm[1][0]?.ssn,
+            birthplace: updatedForm[1][0]?.birthPlace,
+            birthwitness: updatedForm[1][0]?.birthWitness,
+          },
+          responsible: {
+            fullname: updatedForm[1][0]?.responsibleFullName,
+            residency: updatedForm[1][0]?.responsibleFResidency,
+            category: updatedForm[1][0]?.responsibleFirstName,
+          },
+          doctor: {
+            fullname: updatedForm[1][0]?.doctorFullName,
+            residency: updatedForm[1][0]?.doctorResidency,
+            phone: updatedForm[1][0]?.doctorPhone,
+          },
+          father: {
+            lastName: updatedForm[1][0]?.fatherLastName,
+            firstName: updatedForm[1][0]?.fatherFirstName,
+            citizenship: updatedForm[1][0]?.fatherCitizenship,
+            residency: updatedForm[1][0]?.fatherResidency,
+            religion: updatedForm[1][0]?.fatherReligion,
+            faith: updatedForm[1][0]?.fatherFaith,
+            municipalityRegistered:
+              updatedForm[1][0]?.fatherMunicipalityRegistered,
+            municipalityId: updatedForm[1][0]?.fatherMunicipalityId,
+            vat: updatedForm[1][0]?.fatherVat,
+            ssn: updatedForm[1][0]?.fatherSsn,
+            ssprovider: updatedForm[1][0]?.fatherSsProvider,
+          },
+          mother: {
+            lastName: updatedForm[1][0]?.motherLastName,
+            firstName: updatedForm[1][0]?.motherFirstName,
+            citizenship: updatedForm[1][0]?.motherCitizenship,
+            residency: updatedForm[1][0]?.motherResidency,
+            religion: updatedForm[1][0]?.motherReligion,
+            faith: updatedForm[1][0]?.motherFaith,
+            municipalityRegistered:
+              updatedForm[1][0]?.motherMunicipalityRegistered,
+            municipalityId: updatedForm[1][0]?.motherMunicipalityId,
+            vat: updatedForm[1][0]?.motherVat,
+            ssn: updatedForm[1][0]?.motherSsn,
+            ssprovider: updatedForm[1][0]?.motherSsProvider,
+          },
+          residency: {
+            city: updatedForm[1][0]?.residencyCity,
+            address: updatedForm[1][0]?.residencyAddress,
+            phone: updatedForm[1][0]?.phone,
+          },
+          createdAt: updatedForm[1][0]?.createdAt,
+          updatedAt: updatedForm[1][0]?.updatedAt,
+          userId: updatedForm[1][0]?.userId,
+        };
 
-          try {
-            await sendEmail(
-              "Μια φορμα αλλαξε",
-              `Μπορειτε να δειτε την φορμα εδω: ${process.env.FE_URL}/forms/${updatedForm[1][0]?.id}`
-            );
-          } catch (error) {
-            console.log(error);
-          }
-          if (req.body.stage === 'done' && req.userRole !== "municipality") {
-            await Form.create({
-            ...reshapedForm,
-            userId: req.userID,
-            stage: 'edit',
-            createdBy: 'municipality',
-          });
-          }
-
-          res.send(reshapedFormToSend);
-        } else {
-          next(createHttpError(400, "Failed to update form"));
+        try {
+          await sendEmail(
+            "Μια φορμα αλλαξε",
+            `Μπορειτε να δειτε την φορμα εδω: ${process.env.FE_URL}/forms/${updatedForm[1][0]?.id}`
+          );
+        } catch (error) {
+          console.log(error);
         }
+        if (req.body.stage === 'done' && req.userRole !== "municipality") {
+          await Form.create({
+          ...reshapedForm,
+          userId: req.userID,
+          stage: 'edit',
+          createdBy: 'municipality',
+        });
+        }
+
+        res.send(reshapedFormToSend);
       } else {
         next(403, "You dont have access to this form");
       }
