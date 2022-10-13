@@ -33,7 +33,7 @@ server.use(cookieParser());
 server.use(express.json());
 const port = process.env.PORT || 8080;
 
-server.use("/", serverRouter);
+server.use("/status", serverRouter);
 server.use("/users", userRouter);
 server.use("/forms", formRouter);
 server.use("/appointments", appointmentRouter);
