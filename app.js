@@ -1,9 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import listEndpoints from "express-list-endpoints";
-import * as dotenv from 'dotenv'
-dotenv.config() 
 
 import serverRouter from "./src/routes/server.js";
 import userRouter from "./src/routes/user.js";
@@ -13,8 +14,15 @@ import formRouter from "./src/routes/form.js";
 import appointmentRouter from "./src/routes/appointment.js";
 import User from "./src/db/models/user.js";
 import encryptPassword from "./src/tools/encryptPassword.js";
+import path from "path";
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const server = express();
+
+// Have Node serve the files for our built React app
+server.use(express.static(path.resolve(__dirname, '../client/build')));
 server.use(
   cors({
     origin: process.env.FE_URL,
@@ -30,6 +38,11 @@ server.use("/users", userRouter);
 server.use("/forms", formRouter);
 server.use("/appointments", appointmentRouter);
 server.use(errorHandler);
+
+// All other GET requests not handled before will return our React app
+server.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
+});
 
 server.listen(port, async () => {
   console.log(`✅ Server is running at port ${port}`);
