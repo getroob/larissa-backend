@@ -1,34 +1,34 @@
-import { Router } from "express";
-import authValidator from "../auth/authValidator.js";
-import { Form } from "../db/models/index.js";
-import createHttpError from "http-errors";
-import sendEmail from "../tools/sendEmail.js";
-import * as dotenv from 'dotenv'
-dotenv.config() 
+import { Router } from 'express';
+import authValidator from '../auth/authValidator.js';
+import { Form } from '../db/models/index.js';
+import createHttpError from 'http-errors';
+import sendEmail from '../tools/sendEmail.js';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const formRouter = Router();
 
-formRouter.get("/", authValidator, async (req, res, next) => {
+formRouter.get('/', authValidator, async (req, res, next) => {
   try {
     let forms;
     const type = req.query.type;
-    if (req.userRole === "refugee") {
-      if (type === "preperation") {
+    if (req.userRole === 'refugee') {
+      if (type === 'preperation') {
         forms = await Form.findAll({
-          where: { userId: req.userID, createdBy: "refugee" },
+          where: { userId: req.userID, createdBy: 'refugee' },
         });
-      } else if (type === "validateForms") {
+      } else if (type === 'validateForms') {
         forms = await Form.findAll({
-          where: { userId: req.userID, createdBy: "municipality" },
+          where: { userId: req.userID, createdBy: 'municipality' },
         });
       } else {
         forms = await Form.findAll({ where: { userId: req.userID } });
       }
     } else {
-      if (type === "preparedForms") {
-        forms = await Form.findAll({ where: { createdBy: "refugee" } });
+      if (type === 'preparedForms') {
+        forms = await Form.findAll({ where: { createdBy: 'refugee' } });
       } else {
-        forms = await Form.findAll({ where: { createdBy: "municipality" } });
+        forms = await Form.findAll({ where: { createdBy: 'municipality' } });
       }
     }
     if (forms) {
@@ -96,21 +96,21 @@ formRouter.get("/", authValidator, async (req, res, next) => {
       });
       res.send(reshapedForms);
     } else {
-      next(createHttpError(404, "No forms found"));
+      next(createHttpError(404, 'No forms found'));
     }
   } catch (error) {
     next(error);
   }
 });
 
-formRouter.post("/", authValidator, async (req, res, next) => {
+formRouter.post('/', authValidator, async (req, res, next) => {
   try {
     const numOfForms = await Form.count({
-      where: { userId: req.userID, createdBy: "refugee", stage: ['edit', 'done'] },
+      where: { userId: req.userID, createdBy: 'refugee', stage: ['edit', 'done'] },
     });
 
     if (numOfForms >= 2) {
-      next(createHttpError(400, "You cant create more than 2 forms"));
+      next(createHttpError(400, 'You cant create more than 2 forms'));
     } else {
       const reshapedData = {
         firstName: req.body.child?.firstName,
@@ -157,14 +157,14 @@ formRouter.post("/", authValidator, async (req, res, next) => {
 
       const newForm = await Form.create({
         ...reshapedData,
-        userId: req.userRole === "municipality" ? req.body?.userId : req.userID,
+        userId: req.userRole === 'municipality' ? req.body?.userId : req.userID,
         createdBy: req.userRole,
       });
 
       if (newForm) {
         try {
           await sendEmail(
-            "Μια νεα φορμα δημιουργήθηκε",
+            'Μια νεα φορμα δημιουργήθηκε',
             `Μπορειτε να δειτε την νεα φορμα εδω: ${process.env.FE_URL}/forms/${newForm?.dataValues?.id}`
           );
         } catch (error) {
@@ -172,7 +172,7 @@ formRouter.post("/", authValidator, async (req, res, next) => {
         }
         res.status(201).send(newForm);
       } else {
-        next(createHttpError(400, "Failed to create form"));
+        next(createHttpError(400, 'Failed to create form'));
       }
     }
   } catch (error) {
@@ -180,11 +180,11 @@ formRouter.post("/", authValidator, async (req, res, next) => {
   }
 });
 
-formRouter.get("/:id", authValidator, async (req, res, next) => {
+formRouter.get('/:id', authValidator, async (req, res, next) => {
   try {
     const form = await Form.findByPk(req.params.id);
     if (form) {
-      if (form.userId === req.userID || req.userRole === "municipality") {
+      if (form.userId === req.userID || req.userRole === 'municipality') {
         const reshapedForm = {
           id: form.id,
           createdBy: form.createdBy,
@@ -247,21 +247,21 @@ formRouter.get("/:id", authValidator, async (req, res, next) => {
         };
         res.send(reshapedForm);
       } else {
-        next(403, "You dont have access to this form");
+        next(403, 'You dont have access to this form');
       }
     } else {
-      next(createHttpError(404, "Form not found"));
+      next(createHttpError(404, 'Form not found'));
     }
   } catch (error) {
     next(error);
   }
 });
 
-formRouter.put("/:id", authValidator, async (req, res, next) => {
+formRouter.put('/:id', authValidator, async (req, res, next) => {
   try {
     const form = await Form.findByPk(req.params.id);
     if (form) {
-      if (form.userId === req.userID || req.userRole === "municipality") {
+      if (form.userId === req.userID || req.userRole === 'municipality') {
         const reshapedForm = {
           firstName: req.body.child?.firstName,
           lastName: req.body.child?.lastname,
@@ -341,8 +341,7 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
             residency: updatedForm[1][0]?.fatherResidency,
             religion: updatedForm[1][0]?.fatherReligion,
             faith: updatedForm[1][0]?.fatherFaith,
-            municipalityRegistered:
-              updatedForm[1][0]?.fatherMunicipalityRegistered,
+            municipalityRegistered: updatedForm[1][0]?.fatherMunicipalityRegistered,
             municipalityId: updatedForm[1][0]?.fatherMunicipalityId,
             vat: updatedForm[1][0]?.fatherVat,
             ssn: updatedForm[1][0]?.fatherSsn,
@@ -355,8 +354,7 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
             residency: updatedForm[1][0]?.motherResidency,
             religion: updatedForm[1][0]?.motherReligion,
             faith: updatedForm[1][0]?.motherFaith,
-            municipalityRegistered:
-              updatedForm[1][0]?.motherMunicipalityRegistered,
+            municipalityRegistered: updatedForm[1][0]?.motherMunicipalityRegistered,
             municipalityId: updatedForm[1][0]?.motherMunicipalityId,
             vat: updatedForm[1][0]?.motherVat,
             ssn: updatedForm[1][0]?.motherSsn,
@@ -374,38 +372,39 @@ formRouter.put("/:id", authValidator, async (req, res, next) => {
 
         try {
           await sendEmail(
-            "Μια φορμα αλλαξε",
+            'Μια φορμα αλλαξε',
             `Μπορειτε να δειτε την φορμα εδω: ${process.env.FE_URL}/forms/${updatedForm[1][0]?.id}`
           );
         } catch (error) {
           console.log(error);
         }
-        if (req.body.stage === 'done' && req.userRole !== "municipality") {
+        console.log(req);
+        if (req.body.stage === 'done' && req.userRole !== 'municipality') {
           await Form.create({
-          ...reshapedForm,
-          userId: req.userID,
-          stage: 'edit',
-          createdBy: 'municipality',
-        });
+            ...reshapedForm,
+            userId: req.userID,
+            stage: 'edit',
+            createdBy: 'municipality',
+          });
         }
 
         res.send(reshapedFormToSend);
       } else {
-        next(403, "You dont have access to this form");
+        next(403, 'You dont have access to this form');
       }
     } else {
-      next(createHttpError(404, "Form not found"));
+      next(createHttpError(404, 'Form not found'));
     }
   } catch (error) {
     next(error);
   }
 });
 
-formRouter.delete("/:id", authValidator, async (req, res, next) => {
+formRouter.delete('/:id', authValidator, async (req, res, next) => {
   try {
     const form = await Form.findByPk(req.params.id);
     if (form) {
-      if (form.userId === req.userID || req.userRole === "municipality") {
+      if (form.userId === req.userID || req.userRole === 'municipality') {
         const deletedForm = await Form.destroy({
           where: {
             id: req.params.id,
@@ -414,13 +413,13 @@ formRouter.delete("/:id", authValidator, async (req, res, next) => {
         if (deletedForm) {
           res.status(204).send();
         } else {
-          next(400, "Failed to delete form");
+          next(400, 'Failed to delete form');
         }
       } else {
-        next(403, "You dont have access to this form");
+        next(403, 'You dont have access to this form');
       }
     } else {
-      next(createHttpError(404, "Form not found"));
+      next(createHttpError(404, 'Form not found'));
     }
   } catch (error) {
     next(error);
