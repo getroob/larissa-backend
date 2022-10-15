@@ -204,7 +204,7 @@ bson@^4.2.2, bson@^4.6.1:
   dependencies:
     buffer "^5.6.0"
 
-buffer-equal-constant-time@1.0.1:
+buffer-equal-constant-time@1.0.1, buffer-equal-constant-time@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz#f8e71132f7ffe6e01a5c9697a4c6f3e48d5cc819"
   integrity sha1-+OcRMvf/5uAaXJaXpMbz5I1cyBk=
@@ -510,6 +510,13 @@ etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
+
+express-github-webhook@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/express-github-webhook/-/express-github-webhook-1.0.6.tgz#a980ca0ab88b8cbda47b94a1e918c3f0a68f4cad"
+  integrity sha512-7DUdoWfJBO3uaeib33zEYqmRWm6lgZ0j4CIUt0xYBnMC3LLnHGBpn+X5/eOcCLKGXrpLyRHbvF57VADUTf5Llw==
+  dependencies:
+    buffer-equal-constant-time "^1.0.1"
 
 express-list-endpoints@^6.0.0:
   version "6.0.0"
