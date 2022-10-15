@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 const server = express();
 
 // Have Node serve the files for our built React app
-server.use(express.static(path.resolve(__dirname, './client/build')));
+server.use(express.static(path.resolve(__dirname, './client')));
 server.use(
   cors({
     origin: process.env.FE_URL,
@@ -41,7 +41,7 @@ server.use(errorHandler);
 
 // All other GET requests not handled before will return our React app
 server.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+  res.sendFile(path.resolve(__dirname, './client', 'index.html'));
 });
 
 server.listen(port, async () => {
