@@ -15,7 +15,7 @@ import formRouter from './src/routes/form.js';
 import appointmentRouter from './src/routes/appointment.js';
 import User from './src/db/models/user.js';
 import encryptPassword from './src/tools/encryptPassword.js';
-import child_process from 'child_process';
+import { exec } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
