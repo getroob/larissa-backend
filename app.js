@@ -4,6 +4,7 @@ dotenv.config();
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import cors from 'cors';
+import express-github-webhook from 'express-github-webhook';
 import listEndpoints from 'express-list-endpoints';
 
 import serverRouter from './src/routes/server.js';
@@ -14,9 +15,11 @@ import formRouter from './src/routes/form.js';
 import appointmentRouter from './src/routes/appointment.js';
 import User from './src/db/models/user.js';
 import encryptPassword from './src/tools/encryptPassword.js';
+import child_process from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+const webhookHandler = GithubWebHook({ path: '/api/webhook', secret: process.env.GITHUB_WEBHOOK_SECRET });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const server = express();
@@ -31,6 +34,7 @@ server.use(
 );
 server.use(cookieParser());
 server.use(express.json());
+server.use(webhookHandler);
 const port = process.env.PORT || 8080;
 
 server.use('/api/status', serverRouter);
@@ -42,6 +46,10 @@ server.use(errorHandler);
 // All other GET requests not handled before will return our React app
 server.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, './client', 'index.html'));
+});
+
+webhookHandler.on('push', (repo, data) => {
+  exec('git pull && touch tmp/restart.txt');
 });
 
 server.listen(port, async () => {
