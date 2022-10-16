@@ -44,7 +44,9 @@ server.use('/api/users', userRouter);
 server.use('/api/forms', formRouter);
 server.use('/api/appointments', appointmentRouter);
 server.use('/api/webhook', webhookHandler.middleware, (req, res) => {
-  exec('git pull && touch tmp/restart.txt');
+  exec('git pull');
+  res.status(200).send();
+  exec('touch tmp/restart.txt');
 });
 server.use(errorHandler);
 
