@@ -4,7 +4,7 @@ dotenv.config();
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import cors from 'cors';
-import express-github-webhook from 'express-github-webhook';
+// import express-github-webhook from 'express-github-webhook';
 import listEndpoints from 'express-list-endpoints';
 
 import serverRouter from './src/routes/server.js';
@@ -19,7 +19,7 @@ import child_process from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const webhookHandler = GithubWebHook({ path: '/api/webhook', secret: process.env.GITHUB_WEBHOOK_SECRET });
+// const webhookHandler = GithubWebHook({ path: '/api/webhook', secret: process.env.GITHUB_WEBHOOK_SECRET });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const server = express();
@@ -34,7 +34,7 @@ server.use(
 );
 server.use(cookieParser());
 server.use(express.json());
-server.use(webhookHandler);
+// server.use(webhookHandler);
 const port = process.env.PORT || 8080;
 
 server.use('/api/status', serverRouter);
@@ -48,9 +48,9 @@ server.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, './client', 'index.html'));
 });
 
-webhookHandler.on('push', (repo, data) => {
-  exec('git pull && touch tmp/restart.txt');
-});
+// webhookHandler.on('push', (repo, data) => {
+//   exec('git pull && touch tmp/restart.txt');
+// });
 
 server.listen(port, async () => {
   console.log(`✅ Server is running at port ${port}`);
