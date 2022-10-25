@@ -11,17 +11,16 @@ const transporter = nodemailer.createTransport({
     pass: pass,
   },
   tls:{
-         rejectUnauthorized: false
+    rejectUnauthorized: false
   }
 });
 
 const sendEmail = async (subject, text, to) => {
   const info = await transporter.sendMail({
     from: `"Larissa Roob" <${user}>`,
-    to: "georgekarapi@yahoo.gr",
+    to: to || user,
     subject,
-    text,
-    // html: "<b>Hello world?</b>",
+    text
   });
 
   console.log("Message sent: %s", info.messageId);
