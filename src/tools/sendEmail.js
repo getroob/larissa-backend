@@ -6,14 +6,13 @@ const { user, pass } = process.env;
 const transporter = nodemailer.createTransport({
   host: "mail.itbiz.gr",
   port: 587,
-  secure: true,
   auth: {
     user: user,
     pass: pass,
   },
-  tls: {
-    ciphers: "SSLv3",
-  },
+  tls:{
+         rejectUnauthorized: false
+  }
 });
 
 const sendEmail = async (subject, text, to) => {
