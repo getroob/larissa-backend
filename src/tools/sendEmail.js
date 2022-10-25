@@ -1,22 +1,15 @@
 import nodemailer from "nodemailer";
-import * as dotenv from 'dotenv'
-dotenv.config() 
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const { user, pass } = process.env;
 const transporter = nodemailer.createTransport({
-  // host: "imap.gmail.com",
-  // port: 993,
-  // secure: true,
-  // auth: {
-  //   user,
-  //   pass,
-  // },
-  host: "mail.auth.gr",
+  host: "mail.itbiz.gr",
   port: 587,
   secure: true,
   auth: {
-    user: "user",
-    pass: "pass",
+    user: user,
+    pass: pass,
   },
   tls: {
     ciphers: "SSLv3",
@@ -26,9 +19,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (subject, text, to) => {
   const info = await transporter.sendMail({
     from: `"Larissa Roob" <${user}>`,
-    to: to || user,
-    // from: `"Larissa Roob" <email>`,
-    // to: "email",
+    to: "wagasic523@24rumen.com",
     subject,
     text,
     // html: "<b>Hello world?</b>",
