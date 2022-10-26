@@ -162,14 +162,6 @@ formRouter.post('/', authValidator, async (req, res, next) => {
       });
 
       if (newForm) {
-        try {
-          await sendEmail(
-            'Μια νεα φορμα δημιουργήθηκε',
-            `Μπορειτε να δειτε την νεα φορμα εδω: ${process.env.FE_URL}/forms/${newForm?.dataValues?.id}`
-          );
-        } catch (error) {
-          console.log(error);
-        }
         res.status(201).send(newForm);
       } else {
         next(createHttpError(400, 'Failed to create form'));
@@ -370,22 +362,23 @@ formRouter.put('/:id', authValidator, async (req, res, next) => {
           userId: updatedForm[1][0]?.userId,
         };
 
-        try {
-          await sendEmail(
-            'Μια φορμα αλλαξε',
-            `Μπορειτε να δειτε την φορμα εδω: ${process.env.FE_URL}/forms/${updatedForm[1][0]?.id}`
-          );
-        } catch (error) {
-          console.log(error);
-        }
         console.log(req);
         if (req.body.stage === 'done' && req.userRole !== 'municipality') {
-          await Form.create({
+          const duplicatedForm = await Form.create({
             ...reshapedForm,
             userId: req.userID,
             stage: 'edit',
             createdBy: 'municipality',
           });
+
+          try {
+            await sendEmail(
+              'Μια νεα φορμα υποβλήθηκε',
+              `Μπορειτε να δειτε την φορμα εδω: ${process.env.FE_URL}/forms/${duplicatedForm?.dataValues?.id}`
+            )
+          } catch (error) {
+            console.log(error)
+          }
         }
 
         res.send(reshapedFormToSend);
